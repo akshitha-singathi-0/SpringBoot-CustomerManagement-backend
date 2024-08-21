@@ -6,9 +6,11 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,12 +51,18 @@ public class CustomerAPIController {
         return ResponseEntity.created(location).build();
     }
 
-    // @PutMapping("/{id}")
-    // public ResponseEntity<?> updateCustomer(@RequestBody Customer newCustomer, @PathVariable long id){
-    //     if(newCustomer.getName() == null || newCustomer.getEmail() == null){
-    //         return ResponseEntity.badRequest().build();
-    //     }
-    //     customerList.add(newCustomer);
-    //     return ResponseEntity.ok().build();
-    // }
+    @PutMapping("/customers/{id}")
+    public ResponseEntity<?> updateCustomer(@RequestBody Customer newCustomer, @PathVariable long id){
+        if(newCustomer.getId() != id || newCustomer.getName() == null || newCustomer.getEmail() == null){
+            return ResponseEntity.badRequest().build();
+        }
+        repo.save(newCustomer);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/customers/{id}")
+    public ResponseEntity<?> deleteCustomer(@PathVariable long id){
+        repo.deleteById(id);;
+        return ResponseEntity.ok().build();
+    }
 }
